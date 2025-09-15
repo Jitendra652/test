@@ -180,6 +180,7 @@ export class MemStorage implements IStorage {
       ...insertUser,
       id,
       password: hashedPassword,
+      location: insertUser.location ?? null,
       plan: "free",
       storageUsed: 0,
       apiCallsUsed: 0,
@@ -228,6 +229,7 @@ export class MemStorage implements IStorage {
     const event: Event = {
       ...insertEvent,
       id,
+      imageUrl: insertEvent.imageUrl ?? null,
       currentParticipants: 0,
       createdAt: new Date(),
     };
@@ -305,6 +307,8 @@ export class MemStorage implements IStorage {
     const payment: Payment = {
       ...insertPayment,
       id,
+      currency: insertPayment.currency ?? "USD",
+      paypalOrderId: insertPayment.paypalOrderId ?? null,
       createdAt: new Date(),
     };
     this.payments.set(id, payment);
@@ -331,6 +335,9 @@ export class MemStorage implements IStorage {
     const budget: Budget = {
       ...insertBudget,
       id,
+      activitiesSpent: insertBudget.activitiesSpent ?? "0",
+      equipmentSpent: insertBudget.equipmentSpent ?? "0",
+      transportSpent: insertBudget.transportSpent ?? "0",
       createdAt: new Date(),
     };
     this.budgets.set(id, budget);
