@@ -13,7 +13,9 @@ export function useWebSocket() {
     if (!token) return;
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws?token=${token}`;
+    const hostname = window.location.hostname;
+    const port = window.location.port || '5000'; // Default to 5000 if port is not specified
+    const wsUrl = `${protocol}//${hostname}:${port}/ws?token=${token}`;
     
     ws.current = new WebSocket(wsUrl);
 
