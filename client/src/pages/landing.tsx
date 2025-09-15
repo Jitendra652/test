@@ -193,7 +193,7 @@ export default function Landing() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredEvents.map((event) => (
+              {featuredEvents.map((event: any) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>

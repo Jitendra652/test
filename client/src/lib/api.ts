@@ -150,4 +150,11 @@ export const api = {
       method: 'POST',
     }),
   },
+
+  // Admin endpoints
+  admin: {
+    seed: () => apiRequest('/v1/admin/seed', {
+      method: 'POST',
+    }),
+  },
 };
