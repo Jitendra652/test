@@ -8,7 +8,7 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { storage } from "./storage";
 import { loginSchema, registerSchema, insertEventSchema, insertBudgetSchema } from "@shared/schema";
-import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
+// PayPal functions will be conditionally imported if environment variables are available
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key";
 
@@ -296,18 +296,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PayPal payment routes
-  app.get("/api/paypal/setup", async (req, res) => {
-    await loadPaypalDefault(req, res);
-  });
+  // PayPal payment routes - only register if environment variables are available
+  const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
+  if (PAYPAL_CLIENT_ID && PAYPAL_CLIENT_SECRET) {
+    try {
+      const { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } = await import("./paypal");
+      
+      app.get("/api/paypal/setup", async (req, res) => {
+        await loadPaypalDefault(req, res);
+      });
 
-  app.post("/api/paypal/order", async (req, res) => {
-    await createPaypalOrder(req, res);
-  });
+      app.post("/api/paypal/order", async (req, res) => {
+        await createPaypalOrder(req, res);
+      });
 
-  app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
-    await capturePaypalOrder(req, res);
-  });
+      app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
+        await capturePaypalOrder(req, res);
+      });
+      
+      console.log("✓ PayPal integration enabled");
+    } catch (error) {
+      console.warn("⚠ PayPal integration failed to load:", error);
+    }
+  } else {
+    console.log("ℹ PayPal integration disabled - missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET");
+    
+    // Provide fallback routes that return appropriate errors
+    app.get("/api/paypal/setup", (req, res) => {
+      res.status(503).json({ error: "PayPal integration not configured" });
+    });
+
+    app.post("/api/paypal/order", (req, res) => {
+      res.status(503).json({ error: "PayPal integration not configured" });
+    });
+
+    app.post("/api/paypal/order/:orderID/capture", (req, res) => {
+      res.status(503).json({ error: "PayPal integration not configured" });
+    });
+  }
 
   // Payment management routes
   app.post("/api/v1/user/create-payment", authenticateToken, async (req: any, res) => {
