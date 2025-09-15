@@ -12,10 +12,15 @@ class ApiError extends Error {
 async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const url = `${API_BASE}${endpoint}`;
   
+  const authHeaders = getAuthHeaders();
+  const baseHeaders: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
   const config: RequestInit = {
     headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
+      ...baseHeaders,
+      ...authHeaders,
       ...options.headers,
     },
     ...options,
@@ -97,12 +102,11 @@ export const api = {
     upload: (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
+      const authHeaders = getAuthHeaders();
       return apiRequest('/upload', {
         method: 'POST',
         body: formData,
-        headers: {
-          ...getAuthHeaders(),
-        },
+        headers: authHeaders,
       });
     },
     generateToken: (fileId: string) => apiRequest('/v1/files/generate-token', {
