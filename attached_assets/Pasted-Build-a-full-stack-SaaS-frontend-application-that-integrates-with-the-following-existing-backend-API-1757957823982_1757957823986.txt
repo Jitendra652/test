@@ -1,0 +1,74 @@
+Build a full-stack SaaS frontend application that integrates with the following existing backend API (OpenAPI 3.0 spec included below).
+
+Tech Stack:
+- Frontend: React + TypeScript + Tailwind CSS (fully responsive + dark mode)
+- State Management: React Query for API calls and caching
+- Auth: JWT-based authentication using backend endpoints
+- Charts: Chart.js or Recharts for analytics
+- Notifications: WebSockets for real-time events
+- PWA support (service worker + manifest)
+- SEO optimized with meta tags, Open Graph, and structured data
+- Deployment-ready in Replit (npm scripts, vite config)
+
+Features:
+
+1. Authentication
+- Register via `/v1/auth/register`
+- Login via `/v1/auth/login` (save JWT to cookies/localStorage with “Remember Me”)
+- Forgot Password: frontend flow (integrate when backend available)
+- Email verification + 2FA toggle (frontend only for now)
+
+2. Dashboard
+- Fetch user overview from `/v1/auth/login` response + profile
+- Show usage stats (API calls, storage) using `/v1/metrics`
+- File operations: `/v1/upload`, `/v1/files/generate-token`, `/v1/files/download`, `/v1/transform`
+- Payment history via `/v1/user/execute-payment`, `/v1/user/cancel-payment`
+- Subscription details via `/v1/user/create-payment`
+
+3. Payments & Plans
+- Integrate PayPal with:
+  - `/v1/user/create-payment` → approval URL
+  - `/v1/user/execute-payment` → finalize plan upgrade
+  - `/v1/user/cancel-payment` → handle cancellation
+- Plans:
+  - Free: 1GB, 1,000 API calls
+  - Basic: 5GB, 5,000 calls, analytics, $10/month
+  - Premium: 10GB, 10,000 calls, priority support, $20/month
+- Success & failure payment pages
+
+4. File Management
+- Upload, download, generate tokens, and transform images
+
+5. Error Handling
+- Show API errors (`400`, `401`, `403`, `404`, `500`)
+- Handle expired JWT by redirecting to login
+- Fallback error page
+
+6. Advanced Features
+- Real-time notifications (payments, plan expiration) via WebSockets
+- Analytics dashboard with API usage charts, storage progress bars, payment trends
+- Admin Panel:
+  - User management via `/v1/admin/seed`
+  - View payment records
+  - System analytics via `/v1/metrics`
+- Localization (English, Spanish, French)
+- PWA installable app
+
+7. Static & Settings Pages
+- Settings: profile management, change password, notifications preferences
+- Static: About Us, Contact Us, Terms, Privacy Policy
+- API Docs page: connect to `/v1/docs`
+
+Backend API Spec:
+(Use this as the source of truth for all endpoints and schema)
+<PASTE THE ENTIRE OPENAPI JSON SPEC HERE>
+
+Deliverables:
+- React + Tailwind project structure
+- Prebuilt routes & components for all features
+- API service layer using React Query connected to endpoints
+- JWT handling with refresh logic
+- .env support for backend API base URL
+- PWA manifest + service worker
+- SEO-ready static pages
+- Deployment-ready package.json for Replit
